@@ -228,7 +228,7 @@ fieldset {
   font-weight: 600;
 }
 
-.hidden {
+.hide {
   display: none;
 }
 
@@ -238,10 +238,20 @@ fieldset {
 
 #submit {
     margin-left: 10px;
+    padding: 10px;
+    border-radius: 9px;
 }
 
 #addScore {
     margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 9px;
+}
+
+#cancel {
+    margin-left: 10px;
+    cursor: pointer;
+    
 }
 
 /* input {

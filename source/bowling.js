@@ -35,6 +35,9 @@ class Line {
     this.button = document.createElement("button");
     this.button.setAttribute("id", "submit");
     this.button.textContent = "Submit Score Set";
+    this.cancel = document.createElement("a");
+    this.cancel.textContent = "cancel";
+    this.cancel.setAttribute("id", "cancel");
   }
 
   createInput() {
@@ -49,11 +52,12 @@ class View {
     this.button = this.getEl("addScore");
     this.form = this.createEl("div");
     this.formShow = false;
-    this.form.classList.add("hidden");
+    this.form.classList.add("hide");
     this.form.appendChild(this.line.input1);
     this.form.appendChild(this.line.input2);
     this.form.appendChild(this.line.input3);
     this.form.appendChild(this.line.button);
+    this.form.appendChild(this.line.cancel);
     this.app.appendChild(this.form);
     console.log(this.tbody);
   }
@@ -100,16 +104,20 @@ class View {
     this.line.input1.value = "";
     this.line.input2.value = "";
     this.line.input3.value = "";
-    this.form.classList.add("hidden");
+    this.form.classList.add("hide");
+    this.button.classList.remove("hide");
     this.formShow = false;
   };
 
   bindAddScore(handler) {
     this.button.addEventListener("click", e => {
       if (this.formShow === false) {
-        this.form.classList.remove("hidden");
+        this.form.classList.remove("hide");
+        this.button.classList.add("hide");
         this.formShow = true;
         const button = this.getEl("submit");
+        const cancel = this.getEl("cancel");
+        cancel.addEventListener("click", this.resetForm);
         button.addEventListener("click", e => {
           const score1 = this.line.input1.value;
           const score2 = this.line.input2.value;
@@ -129,7 +137,7 @@ class View {
           this.resetForm();
         });
       } else {
-        this.form.classList.add("hidden");
+        this.form.classList.add("hide");
         this.formShow = false;
       }
     });
