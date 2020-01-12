@@ -9,6 +9,20 @@
 	],
 "creatorBuild": "31934",
 "files": {
+	"/.gitignore": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/build/.gitignore",
+		"oF": 0
+		},
+	"/build": {
+		"ft": 65536,
+		"oA": 1,
+		"oAP": "/build/build",
+		"oF": 0
+		},
 	"/index.html": {
 		"cB": 0,
 		"ft": 8192,
@@ -16,6 +30,27 @@
 		"oA": 0,
 		"oAP": "/build/index.html",
 		"oF": 0
+		},
+	"/source/bowling.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/build/bowling-min.js",
+		"oF": 0,
+		"sC": 3,
+		"tS": 0
+		},
+	"/source/style.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/build/style-min.css",
+		"oF": 0,
+		"oS": 3
 		}
 	},
 "hooks": [
