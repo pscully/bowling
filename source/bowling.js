@@ -212,15 +212,15 @@ class View {
     });
   }
 
-  getDate() {
-    const dateObj = new Date();
-    const month = dateObj.getUTCMonth() + 1; //months from 1-12
-    const day = dateObj.getUTCDate();
-    const year = dateObj.getUTCFullYear();
+  // getDate() {
+  //   const dateObj = new Date();
+  //   const month = dateObj.getUTCMonth() + 1; //months from 1-12
+  //   const day = dateObj.getUTCDate();
+  //   const year = dateObj.getUTCFullYear();
 
-    const newDate = "Last Updated: " + month + "/" + day + "/" + year;
-    return newDate;
-  }
+  //   const newDate = "Last Updated: " + month + "/" + day + "/" + year;
+  //   return newDate;
+  // }
 
   getEl(el) {
     return document.getElementById(el);
