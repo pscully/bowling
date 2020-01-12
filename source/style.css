@@ -10,8 +10,8 @@ body {
   color: #c9c9c9;
   background-color: #222222;
   padding: 13px;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
-
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 @media (max-width: 684px) {
@@ -204,7 +204,7 @@ input[type] {
   /* The 6px vertically centers text on FF, ignored by Webkit */
   margin-bottom: 10px;
   background-color: #4a4a4a;
-  border: 1px solid #4a4a4a;
+  border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box;
@@ -212,7 +212,7 @@ input[type] {
 textarea:focus,
 select:focus,
 input[type]:focus {
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff;
   outline: 0;
 }
 
@@ -229,9 +229,42 @@ fieldset {
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 .title {
-    color: yellow;
+  color: yellow;
 }
+
+#submit {
+    margin-left: 10px;
+}
+
+#addScore {
+    margin-bottom: 10px;
+}
+
+/* input {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  input[type="text"] {
+    padding: 5px;
+    border: 2px solid #ccc;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  }
+  
+  input[type="text"]:focus {
+    border-color: #333;
+  }
+  
+  input[type="submit"] {
+    padding: 5px 15px;
+    background: #ccc;
+    border: 0 none;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  } */

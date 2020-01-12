@@ -11,7 +11,7 @@ class Model {
 
   __commit(scores) {
     localStorage.setItem("scores", JSON.stringify(scores));
-    console.log(this.scores);
+    console.log("Set Saved", this.scores);
   }
 
   addScore(scoreSet) {
@@ -26,6 +26,9 @@ class Line {
     this.input1 = this.createInput();
     this.input2 = this.createInput();
     this.input3 = this.createInput();
+    this.input1.setAttribute("type", "text");
+    this.input2.setAttribute("type", "text");
+    this.input3.setAttribute("type", "text");
     this.input1.placeholder = "String #1";
     this.input2.placeholder = "String #2";
     this.input3.placeholder = "String #3";
@@ -93,6 +96,14 @@ class View {
     }
   };
 
+  resetForm = () => {
+    this.line.input1.value = "";
+    this.line.input2.value = "";
+    this.line.input3.value = "";
+    this.form.classList.add("hidden");
+    this.formShow = false;
+  };
+
   bindAddScore(handler) {
     this.button.addEventListener("click", e => {
       if (this.formShow === false) {
@@ -109,15 +120,13 @@ class View {
             two: score2,
             three: score3,
             total: parseInt(score1) + parseInt(score2) + parseInt(score3),
-            average: (parseInt(score1) + parseInt(score2) + parseInt(score3)) / 3
+            average: Math.round(
+              (parseInt(score1) + parseInt(score2) + parseInt(score3)) / 3
+            )
           };
 
           handler(scoreSet);
-          this.line.input1.value = "";
-          this.line.input2.value = "";
-          this.line.input3.value = "";
-          this.form.classList.add("hidden");
-          this.formShow = false;
+          this.resetForm();
         });
       } else {
         this.form.classList.add("hidden");
