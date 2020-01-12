@@ -1,8 +1,6 @@
 class Model {
   constructor() {
     this.scores = JSON.parse(localStorage.getItem("scores")) || [];
-    this.bowler = JSON.parse(localStorage.getItem("bowler")) || {};
-    console.log(this.scores);
   }
 
   bindUpdateScoresDisplay(callback) {
@@ -19,6 +17,12 @@ class Model {
     this.__commit(this.scores);
     this.updateScoresDisplay(this.scores);
   }
+
+  deleteScores(score) {
+    this.scores[score].deleted = true;
+    this.__commit(this.scores);
+    this.updateScoresDisplay(this.scores);
+  }
 }
 
 class Line {
@@ -26,9 +30,6 @@ class Line {
     this.input1 = this.createInput();
     this.input2 = this.createInput();
     this.input3 = this.createInput();
-    this.input1.setAttribute("type", "text");
-    this.input2.setAttribute("type", "text");
-    this.input3.setAttribute("type", "text");
     this.input1.placeholder = "String #1";
     this.input2.placeholder = "String #2";
     this.input3.placeholder = "String #3";
@@ -41,7 +42,9 @@ class Line {
   }
 
   createInput() {
-    return document.createElement("input");
+    const input = document.createElement("input");
+    input.setAttribute("type", "text");
+    return input;
   }
 }
 
@@ -59,44 +62,67 @@ class View {
     this.form.appendChild(this.line.button);
     this.form.appendChild(this.line.cancel);
     this.app.appendChild(this.form);
-    console.log(this.tbody);
   }
 
   displayScores = scores => {
     const table = this.createEl("table");
     table.setAttribute("id", "table");
+    const tbody = this.createEl("tbody");
+    table.appendChild(tbody);
     const header = table.createTHead();
     const titleRow = header.insertRow();
+    const titleSelect = titleRow.insertCell();
+    titleSelect.textContent = "Delete";
     const titleScoreOne = titleRow.insertCell();
-    titleScoreOne.textContent = "First String";
+    titleScoreOne.textContent = "1st String";
     const titleScoreTwo = titleRow.insertCell();
-    titleScoreTwo.textContent = "Second String";
+    titleScoreTwo.textContent = "2nd String";
     const titleScoreThree = titleRow.insertCell();
-    titleScoreThree.textContent = "Third String";
+    titleScoreThree.textContent = "3rd String";
     const titleScoreTotal = titleRow.insertCell();
-    titleScoreTotal.textContent = "Set Total";
+    titleScoreTotal.textContent = "Total";
     const titleAverage = titleRow.insertCell();
     titleAverage.textContent = "Average";
     const footer = table.createTFoot();
     footer.textContent = this.getDate();
     scores.map(score => {
-      const row = table.insertRow();
-      const cellScore1 = row.insertCell();
-      const cellScore2 = row.insertCell();
-      const cellScore3 = row.insertCell();
-      const cellTotal = row.insertCell();
-      const cellAverage = row.insertCell();
-      cellScore1.innerHTML = score.one;
-      cellScore2.innerHTML = score.two;
-      cellScore3.innerHTML = score.three;
-      cellTotal.innerHTML = score.total;
-      cellAverage.innerHTML = score.average;
+      if (score.deleted === true) {
+        return;
+      } else {
+        const row = tbody.insertRow();
+        const select = row.insertCell();
+        const cellScore1 = row.insertCell();
+        const cellScore2 = row.insertCell();
+        const cellScore3 = row.insertCell();
+        const cellTotal = row.insertCell();
+        const cellAverage = row.insertCell();
+        select.innerHTML = `<input class="select" type="checkbox"> <button class="delete hide">Delete?</button>`;
+        select.setAttribute("id", scores.indexOf(score));
+        select.addEventListener("click", e => this.highlightSelectedRow(e));
+        cellScore1.innerHTML = score.one;
+        cellScore2.innerHTML = score.two;
+        cellScore3.innerHTML = score.three;
+        cellTotal.innerHTML = score.total;
+        cellAverage.innerHTML = score.average;
+      }
     });
     if (this.getEl("table")) {
       const oldTable = this.getEl("table");
       oldTable.parentNode.replaceChild(table, oldTable);
     } else {
       this.app.appendChild(table);
+    }
+  };
+
+  highlightSelectedRow = e => {
+    const button = e.srcElement.parentNode.children[1];
+    if (e.srcElement.checked === true) {
+      e.srcElement.parentNode.classList.add("selected-row");
+      button.classList.remove("hide");
+      // button.addEventListener("click", e => this.deleteScore(e));
+    } else {
+      e.srcElement.parentNode.classList.remove("selected-row");
+      button.classList.add("hide");
     }
   };
 
@@ -108,6 +134,20 @@ class View {
     this.button.classList.remove("hide");
     this.formShow = false;
   };
+
+  deleteScore = e => {
+    alert("Delete?");
+  };
+
+  bindDeleteScore(handler) {
+    const buttons = document.querySelectorAll(".delete");
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const id = button.parentNode.id;
+        handler(id);
+      });
+    });
+  }
 
   bindAddScore(handler) {
     this.button.addEventListener("click", e => {
@@ -124,6 +164,7 @@ class View {
           const score3 = this.line.input3.value;
 
           const scoreSet = {
+            deleted: false,
             one: score1,
             two: score2,
             three: score3,
@@ -132,7 +173,7 @@ class View {
               (parseInt(score1) + parseInt(score2) + parseInt(score3)) / 3
             )
           };
-
+          console.log(scoreSet);
           handler(scoreSet);
           this.resetForm();
         });
@@ -170,14 +211,20 @@ class Controller {
     this.view.bindAddScore(this.handleAddScore);
     this.model.bindUpdateScoresDisplay(this.handleDisplayScores);
     this.view.displayScores(this.model.scores);
+    this.view.bindDeleteScore(this.handleDeleteScore);
   }
 
   handleDisplayScores = scores => {
     this.view.displayScores(scores);
+    this.view.bindDeleteScore(this.handleDeleteScore);
   };
 
   handleAddScore = scoreSet => {
     this.model.addScore(scoreSet);
+  };
+
+  handleDeleteScore = score => {
+    this.model.deleteScores(score);
   };
 }
 

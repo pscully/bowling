@@ -254,6 +254,10 @@ fieldset {
     
 }
 
+.selected-row {
+  background: #CD2D2D;
+  color: #222222;
+}
 /* input {
     -webkit-appearance: none;
     appearance: none;
