@@ -6,7 +6,7 @@ class Model {
   }
 
   bindUpdateScoresDisplay(callback) {
-      this.updateScoresDisplay = callback;
+    this.updateScoresDisplay = callback;
   }
 
   __commit(scores) {
@@ -26,9 +26,9 @@ class Line {
     this.input1 = this.createInput();
     this.input2 = this.createInput();
     this.input3 = this.createInput();
-    this.input1.placeholder = "Score #1";
-    this.input2.placeholder = "Score #2";
-    this.input3.placeholder = "Score #3";
+    this.input1.placeholder = "String #1";
+    this.input2.placeholder = "String #2";
+    this.input3.placeholder = "String #3";
     this.button = document.createElement("button");
     this.button.setAttribute("id", "submit");
     this.button.textContent = "Submit Score Set";
@@ -56,22 +56,41 @@ class View {
   }
 
   displayScores = scores => {
-      const table = this.createEl("table");
-      const header = table.createTHead();
-      header.classList.add("table__heading");
-      header.textContent = "Latest Bowling Scores";
-      const footer = table.createTFoot();
-      footer.textContent = this.getDate();
-      scores.map(score => {
-          const row = table.insertRow();
-          const cellScore1 = row.insertCell();
-          const cellScore2 = row.insertCell();
-          const cellScore3 = row.insertCell();
-          cellScore1.innerHTML = score.one;
-          cellScore2.innerHTML = score.two;
-          cellScore3.innerHTML = score.three;
-      })
+    const table = this.createEl("table");
+    table.setAttribute("id", "table");
+    const header = table.createTHead();
+    const titleRow = header.insertRow();
+    const titleScoreOne = titleRow.insertCell();
+    titleScoreOne.textContent = "First String";
+    const titleScoreTwo = titleRow.insertCell();
+    titleScoreTwo.textContent = "Second String";
+    const titleScoreThree = titleRow.insertCell();
+    titleScoreThree.textContent = "Third String";
+    const titleScoreTotal = titleRow.insertCell();
+    titleScoreTotal.textContent = "Set Total";
+    const titleAverage = titleRow.insertCell();
+    titleAverage.textContent = "Average";
+    const footer = table.createTFoot();
+    footer.textContent = this.getDate();
+    scores.map(score => {
+      const row = table.insertRow();
+      const cellScore1 = row.insertCell();
+      const cellScore2 = row.insertCell();
+      const cellScore3 = row.insertCell();
+      const cellTotal = row.insertCell();
+      const cellAverage = row.insertCell();
+      cellScore1.innerHTML = score.one;
+      cellScore2.innerHTML = score.two;
+      cellScore3.innerHTML = score.three;
+      cellTotal.innerHTML = score.total;
+      cellAverage.innerHTML = score.average;
+    });
+    if (this.getEl("table")) {
+      const oldTable = this.getEl("table");
+      oldTable.parentNode.replaceChild(table, oldTable);
+    } else {
       this.app.appendChild(table);
+    }
   };
 
   bindAddScore(handler) {
@@ -88,17 +107,21 @@ class View {
           const scoreSet = {
             one: score1,
             two: score2,
-            three: score3
+            three: score3,
+            total: parseInt(score1) + parseInt(score2) + parseInt(score3),
+            average: (parseInt(score1) + parseInt(score2) + parseInt(score3)) / 3
           };
 
           handler(scoreSet);
           this.line.input1.value = "";
           this.line.input2.value = "";
           this.line.input3.value = "";
-        });
-      } else {
           this.form.classList.add("hidden");
           this.formShow = false;
+        });
+      } else {
+        this.form.classList.add("hidden");
+        this.formShow = false;
       }
     });
   }
@@ -122,8 +145,6 @@ class View {
   }
 }
 
-class LineController {}
-
 class Controller {
   constructor(view, model) {
     this.view = view;
@@ -133,10 +154,10 @@ class Controller {
     this.model.bindUpdateScoresDisplay(this.handleDisplayScores);
     this.view.displayScores(this.model.scores);
   }
-  
-  handleDisplayScores = (scores) => {
-    this.view.displayScores(scores)
-  }
+
+  handleDisplayScores = scores => {
+    this.view.displayScores(scores);
+  };
 
   handleAddScore = scoreSet => {
     this.model.addScore(scoreSet);
