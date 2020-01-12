@@ -12,16 +12,33 @@ class Model {
     console.log("Set Saved", this.scores);
   }
 
+  getTotals() {
+    let totals = {};
+    let totalTotal = 0;
+    let averageTotal = 0;
+    let count = 0;
+    for (let i = 0; i < this.scores.length; i++) {
+      if (this.scores[i].deleted === false) {
+        count++;
+        averageTotal = averageTotal + this.scores[i].average;
+        totalTotal = totalTotal + this.scores[i].total;
+      }
+    }
+    totals.totals = totalTotal / count;
+    totals.average = averageTotal / count;
+    return totals;
+  }
+
   addScore(scoreSet) {
     this.scores.push(scoreSet);
     this.__commit(this.scores);
-    this.updateScoresDisplay(this.scores);
+    this.updateScoresDisplay(this.scores, this.getTotals());
   }
 
   deleteScores(score) {
     this.scores[score].deleted = true;
     this.__commit(this.scores);
-    this.updateScoresDisplay(this.scores);
+    this.updateScoresDisplay(this.scores, this.getTotals());
   }
 }
 
@@ -64,7 +81,17 @@ class View {
     this.app.appendChild(this.form);
   }
 
-  displayScores = scores => {
+  displayScores = ( scores, totals ) => {
+    const totalsDiv = this.createEl("div");
+    totalsDiv.classList.add("totals");
+    const averageTotal = this.createEl("div");
+    const averageAverage = this.createEl("div");
+    averageTotal.setAttribute("id", "totals-average");
+    averageAverage.setAttribute("id", "average-average");
+    totalsDiv.appendChild(averageTotal);
+    totalsDiv.appendChild(averageAverage);
+    averageTotal.textContent = `Average Total: ${totals.totals}`;
+    averageAverage.textContent = `Average Average: ${totals.average}`;
     const table = this.createEl("table");
     table.setAttribute("id", "table");
     const tbody = this.createEl("tbody");
@@ -83,8 +110,8 @@ class View {
     titleScoreTotal.textContent = "Total";
     const titleAverage = titleRow.insertCell();
     titleAverage.textContent = "Average";
-    const footer = table.createTFoot();
-    footer.textContent = this.getDate();
+    // const footer = table.createTFoot();
+    // footer.textContent = this.getDate();
     scores.map(score => {
       if (score.deleted === true) {
         return;
@@ -112,6 +139,7 @@ class View {
     } else {
       this.app.appendChild(table);
     }
+    this.app.appendChild(totalsDiv);
   };
 
   highlightSelectedRow = e => {
@@ -210,12 +238,12 @@ class Controller {
 
     this.view.bindAddScore(this.handleAddScore);
     this.model.bindUpdateScoresDisplay(this.handleDisplayScores);
-    this.view.displayScores(this.model.scores);
+    this.view.displayScores(this.model.scores, this.model.getTotals());
     this.view.bindDeleteScore(this.handleDeleteScore);
   }
 
-  handleDisplayScores = scores => {
-    this.view.displayScores(scores);
+  handleDisplayScores = ( scores, totals ) => {
+    this.view.displayScores(scores, totals);
     this.view.bindDeleteScore(this.handleDeleteScore);
   };
 
